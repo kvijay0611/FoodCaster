@@ -1,0 +1,447 @@
+[
+  {
+    "id": 1,
+    "title": "Masala Omelette",
+    "image": "https://www.healthyfood.com/wp-content/uploads/2018/02/Basic-omelette.jpg",
+    "diet": [
+      "non-veg",
+      "gluten-free"
+    ],
+    "difficulty": "easy",
+    "time": 10,
+    "servings": 1,
+    "ingredients": [
+      "eggs",
+      "onion",
+      "tomato",
+      "green chili",
+      "coriander",
+      "salt",
+      "pepper",
+      "oil"
+    ],
+    "steps": [
+      "Beat eggs with salt and pepper.",
+      "Saut\u00e9 onion, chili, tomato.",
+      "Add eggs and cook till set.",
+      "Garnish with coriander."
+    ],
+    "nutrition": {
+      "calories": 240,
+      "protein": 16,
+      "carbs": 5,
+      "fat": 18
+    }
+  },
+{
+  "id": 2,
+  "title": "Veg Pulao",
+  "image": "https://www.funfoodfrolic.com/wp-content/uploads/2022/05/Vegetable-Pulao-2.jpg",
+  "diet": ["vegetarian", "gluten-free"],
+  "difficulty": "medium",
+  "time": 30,
+  "servings": 2,
+  "ingredients": ["basmati rice", "peas", "carrot", "beans", "onion", "garam masala", "jeera", "ghee", "salt"],
+  "steps": [
+    "• Rinse and soak rice for 15 mins.",
+    "• Heat ghee, add jeera and onions, sauté lightly.",
+    "• Add chopped veggies, salt, and garam masala.",
+    "• Add rice, water, cook until rice turns fluffy."
+  ],
+  "nutrition": { "calories": 420, "protein": 9, "carbs": 78, "fat": 9 }
+},
+{
+  "id": 3,
+  "title": "Tomato Basil Pasta",
+  "image": "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?q=80&w=580&auto=format&fit=crop",
+  "diet": ["vegetarian"],
+  "difficulty": "medium",
+  "time": 25,
+  "servings": 2,
+  "ingredients": ["pasta", "tomato", "garlic", "basil", "olive oil", "salt"],
+  "steps": [
+    "• Boil pasta with salt until al dente; drain.",
+    "• Sauté garlic in olive oil; add tomato puree.",
+    "• Add basil and salt; simmer 5 mins.",
+    "• Mix in pasta and toss well before serving."
+  ],
+  "nutrition": { "calories": 520, "protein": 14, "carbs": 85, "fat": 14 }
+},
+{
+  "id": 4,
+  "title": "Grilled Paneer Tikka",
+  "image": "https://suhana.com/cdn/shop/articles/paneer-tikka-2-1_350x.png?v=1709544706",
+  "diet": ["vegetarian"],
+  "difficulty": "medium",
+  "time": 20,
+  "servings": 2,
+  "ingredients": ["paneer", "yogurt", "spices", "capsicum", "onion", "salt"],
+  "steps": [
+    "• Marinate paneer, onion, and capsicum with curd, spices, and salt.",
+    "• Skewer pieces alternately and rest for 15 mins.",
+    "• Grill or roast until edges are golden.",
+    "• Serve hot with mint chutney."
+  ],
+  "nutrition": { "calories": 380, "protein": 22, "carbs": 12, "fat": 26 }
+},
+{
+  "id": 5,
+  "title": "Chickpea Salad Bowl",
+  "image": "https://www.simplyorganic.com/media/wysiwyg/simply-organic-recipe-roasted-chickpea-buddha-bowls-with-avocado-dressing-finished-horizontal-1.jpg",
+  "diet": ["vegan"],
+  "difficulty": "hard",
+  "time": 10,
+  "servings": 2,
+  "ingredients": ["chickpeas", "cucumber", "tomato", "onion", "lemon", "olive oil", "salt"],
+  "steps": [
+    "• Mix chickpeas and chopped veggies in a bowl.",
+    "• Add olive oil, lemon juice, and salt.",
+    "• Toss gently until well combined.",
+    "• Serve fresh or chilled."
+  ],
+  "nutrition": { "calories": 320, "protein": 12, "carbs": 42, "fat": 12 }
+},
+{
+  "id": 6,
+  "title": "Chicken Stir-fry",
+  "image": "https://images.unsplash.com/photo-1614398751058-eb2e0bf63e53?q=80&w=714&auto=format&fit=crop",
+  "diet": ["non-veg"],
+  "difficulty": "hard",
+  "time": 20,
+  "servings": 2,
+  "ingredients": ["chicken", "soy sauce", "garlic", "ginger", "capsicum", "onion", "oil"],
+  "steps": [
+    "• Heat oil; sauté garlic and ginger.",
+    "• Add chicken pieces and stir-fry until cooked.",
+    "• Mix in onion, capsicum, and soy sauce.",
+    "• Cook on high flame for 2–3 mins and serve."
+  ],
+  "nutrition": { "calories": 410, "protein": 34, "carbs": 16, "fat": 24 }
+},
+{
+  "id": 7,
+  "title": "Mushroom Fried Rice",
+  "image": "https://plus.unsplash.com/premium_photo-1694141252774-c937d97641da?q=80&w=388&auto=format&fit=crop",
+  "diet": ["vegetarian"],
+  "difficulty": "hard",
+  "time": 18,
+  "servings": 2,
+  "ingredients": ["rice", "mushroom", "spring onion", "soy sauce", "oil", "salt"],
+  "steps": [
+    "• Heat oil and sauté chopped mushrooms.",
+    "• Add cooked rice and soy sauce.",
+    "• Stir-fry with spring onions and salt.",
+    "• Toss well and serve hot."
+  ],
+  "nutrition": { "calories": 460, "protein": 10, "carbs": 80, "fat": 12 }
+},
+{
+  "id": 8,
+  "title": "Veg Sandwich",
+  "image": "https://i0.wp.com/www.shanazrafiq.com/wp-content/uploads/2017/04/02-DSC_0097.jpg?w=2400&ssl=1",
+  "diet": ["vegetarian"],
+  "difficulty": "easy",
+  "time": 8,
+  "servings": 1,
+  "ingredients": ["bread", "tomato", "cucumber", "onion", "butter", "chutney", "salt"],
+  "steps": [
+    "• Spread butter and chutney on bread slices.",
+    "• Arrange tomato, cucumber, and onion layers.",
+    "• Sprinkle salt and close with another slice.",
+    "• Toast lightly or serve plain."
+  ],
+  "nutrition": { "calories": 280, "protein": 7, "carbs": 36, "fat": 12 }
+},
+{
+  "id": 9,
+  "title": "Bhindi Sabji",
+  "image": "https://www.whiskaffair.com/wp-content/uploads/2020/11/Bhindi-Masala-2-3.jpg",
+  "diet": ["vegetarian"],
+  "difficulty": "medium",
+  "time": 15,
+  "servings": 2,
+  "ingredients": ["bhindi", "onion", "tomato", "spices", "oil", "salt"],
+  "steps": [
+    "• Wash and slice bhindi; pat dry.",
+    "• Heat oil, add onion and sauté till soft.",
+    "• Add bhindi, tomato, and spices; cook on low flame.",
+    "• Stir occasionally until soft and non-sticky."
+  ],
+  "nutrition": { "calories": 250, "protein": 6, "carbs": 18, "fat": 10 }
+},
+{
+  "id": 10,
+  "title": "Schezwan Chicken Wings",
+  "image": "https://www.thecookierookie.com/wp-content/uploads/2024/02/bbq-chicken-wings-recipe-featured-image.jpg",
+  "diet": ["non-veg"],
+  "difficulty": "hard",
+  "time": 25,
+  "servings": 2,
+  "ingredients": ["chicken wings", "schezwan sauce", "garlic", "soy sauce", "oil", "salt"],
+  "steps": [
+    "• Marinate wings with salt, soy sauce, and schezwan sauce.",
+    "• Shallow fry or bake until golden and crispy.",
+    "• Toss in hot pan with garlic and extra sauce.",
+    "• Garnish and serve hot."
+  ],
+  "nutrition": { "calories": 480, "protein": 28, "carbs": 10, "fat": 35 }
+},
+{
+  "id": 11,
+  "title": "Dal Tadka",
+  "image": "https://www.mrishtanna.com/wp-content/uploads/2019/10/dal-tadka-instant-pot.jpg",
+  "diet": [
+    "vegan"
+  ],
+  "difficulty": "hard",
+  "time": 30,
+  "servings": 3,
+  "ingredients": [
+    "toor dal",
+    "onion",
+    "tomato",
+    "garlic",
+    "jeera",
+    "turmeric",
+    "chili",
+    "salt"
+  ],
+  "steps": [
+    "Rinse 1 cup toor dal thoroughly under running water until the water runs clear. Soak the dal for 15–20 minutes if you have time (optional).",
+    "In a pressure cooker or pot, add the rinsed dal with about 3 cups of water, 1/2 tsp turmeric and a pinch of salt. Pressure cook for 3–4 whistles on medium heat (or simmer in a pot until the dal is soft and breaks easily).",
+    "Once cooked, mash the dal lightly with the back of a spoon or a whisk to get a slightly creamy texture. Adjust water to reach your desired consistency (thicker or soupier). Keep the dal warm on low heat.",
+    "Heat 2–3 tbsp oil in a small pan for the tadka (tempering). Add 1 tsp jeera and let it sputter for a few seconds.",
+    "Add finely chopped 1 medium onion and sauté until translucent and lightly golden. Add 2–3 crushed or minced garlic cloves and sauté for 30–45 seconds until fragrant (don't burn).",
+    "Add 1 chopped tomato and cook until it softens and oil starts separating from the masala. Add a pinch of turmeric and chopped green chili or red chili powder to taste; cook for another minute.",
+    "Pour the hot tadka (onion-tomato-garlic mixture with jeera) into the mashed dal. Stir well and simmer the dal for 3–5 minutes to blend flavors. Taste and adjust salt and chili.",
+    "Serve hot with steamed rice or roti. (Optional) garnish with chopped coriander and a squeeze of lemon if available."
+  ],
+  "nutrition": {
+    "calories": 250,
+    "protein": 14,
+    "carbs": 36,
+    "fat": 5
+  }
+},
+  {
+  "id": 12,
+  "title": "Curd Rice",
+  "image": "https://i0.wp.com/www.chitrasfoodbook.com/wp-content/uploads/2013/12/curd-rice-plate.jpg?w=1200&ssl=1",
+  "diet": [
+    "vegetarian"
+  ],
+  "difficulty": "medium",
+  "time": 10,
+  "servings": 2,
+  "ingredients": [
+    "rice",
+    "curd",
+    "milk",
+    "mustard",
+    "ginger",
+    "curry leaves",
+    "salt"
+  ],
+  "steps": [
+    "• Cook rice until soft and let it cool slightly.",
+    "• Mash the rice and mix with curd, milk, and salt.",
+    "• Heat oil; add mustard seeds, chopped ginger, and curry leaves.",
+    "• Pour the tempering over the curd rice and mix gently.",
+    "• Serve chilled or at room temperature."
+  ],
+  "nutrition": {
+    "calories": 420,
+    "protein": 9,
+    "carbs": 78,
+    "fat": 8
+  }
+},
+  {
+  "id": 13,
+  "title": "Rava Dosa",
+  "image": "https://rakskitchen.net/wp-content/uploads/2016/03/Rava-dosai-recipe-500x500.jpg",
+  "diet": ["vegetarian"],
+  "difficulty": "medium",
+  "time": 20,
+  "servings": 2,
+  "ingredients": ["rava", "rice flour", "maida", "cumin", "pepper", "salt", "oil"],
+  "steps": [
+    "• Mix rava, rice flour, maida, cumin, pepper, and salt with water to form a thin batter.",
+    "• Rest the batter for 15–20 minutes.",
+    "• Pour the batter over a hot tawa and drizzle oil on edges.",
+    "• Cook until crispy and golden; serve hot with chutney."
+  ],
+  "nutrition": { "calories": 330, "protein": 7, "carbs": 58, "fat": 9 }
+},
+{
+  "id": 14,
+  "title": "Aloo Paratha",
+  "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSArlckgC1fBe7iBZVZQw7oV2MsPeEED53z5g&s",
+  "diet": ["vegetarian"],
+  "difficulty": "hard",
+  "time": 30,
+  "servings": 2,
+  "ingredients": ["wheat flour", "potato", "onion", "spices", "ghee", "salt"],
+  "steps": [
+    "• Knead wheat flour dough and rest it for 10 mins.",
+    "• Mash boiled potatoes with onion, spices, and salt.",
+    "• Stuff potato filling into dough balls and roll into parathas.",
+    "• Roast on tawa with ghee until golden brown."
+  ],
+  "nutrition": { "calories": 520, "protein": 10, "carbs": 80, "fat": 16 }
+},
+{
+  "id": 15,
+  "title": "Fish Curry",
+  "image": "https://stewwithsaba.com/wp-content/uploads/2024/05/IMG_4409-edited.jpg",
+  "diet": ["non-veg"],
+  "difficulty": "easy",
+  "time": 40,
+  "servings": 3,
+  "ingredients": ["fish", "onion", "tomato", "tamarind", "chili", "turmeric", "salt"],
+  "steps": [
+    "• Marinate fish with salt and turmeric; set aside.",
+    "• Sauté onion and tomato; add chili, turmeric, and tamarind extract.",
+    "• Add water and simmer to form curry base.",
+    "• Add fish pieces and cook until done."
+  ],
+  "nutrition": { "calories": 390, "protein": 32, "carbs": 18, "fat": 18 }
+},
+{
+  "id": 16,
+  "title": "Sambar",
+  "image": "https://holycowvegan.net/wp-content/uploads/2023/12/sambar-recipe-10.jpg",
+  "diet": ["vegan"],
+  "difficulty": "easy",
+  "time": 35,
+  "servings": 4,
+  "ingredients": ["toor dal", "tamarind", "sambar powder", "drumstick", "onion", "tomato", "salt"],
+  "steps": [
+    "• Pressure cook toor dal until soft; mash well.",
+    "• Boil tamarind water with veggies, salt, and sambar powder.",
+    "• Add cooked dal and simmer for 10 minutes.",
+    "• Temper with mustard seeds and curry leaves; pour over sambar."
+  ],
+  "nutrition": { "calories": 220, "protein": 10, "carbs": 36, "fat": 3 }
+},
+{
+  "id": 17,
+  "title": "Idli",
+  "image": "https://maayeka.com/wp-content/uploads/2013/10/soft-idli-recipe.jpg",
+  "diet": ["vegan"],
+  "difficulty": "medium",
+  "time": 15,
+  "servings": 2,
+  "ingredients": ["idli batter", "salt"],
+  "steps": [
+    "• Grease idli plates and pour in batter.",
+    "• Steam for 10–12 minutes until fluffy.",
+    "• Let cool slightly and demould carefully.",
+    "• Serve with chutney and sambar."
+  ],
+  "nutrition": { "calories": 160, "protein": 6, "carbs": 32, "fat": 1 }
+},
+{
+  "id": 18,
+  "title": "Pancakes",
+  "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQAj2eQXWOgM98Sh1hvoQ52djWC48aMHBWNNw&s",
+  "diet": ["vegetarian"],
+  "difficulty": "medium",
+  "time": 20,
+  "servings": 2,
+  "ingredients": ["flour", "milk", "egg", "baking powder", "sugar", "butter", "salt"],
+  "steps": [
+    "• Mix flour, baking powder, sugar, and salt in a bowl.",
+    "• Add milk, egg, and melted butter; whisk to smooth batter.",
+    "• Pour batter on a greased pan; cook until bubbles form.",
+    "• Flip and cook golden on both sides; serve with syrup."
+  ],
+  "nutrition": { "calories": 430, "protein": 12, "carbs": 60, "fat": 16 }
+},
+{
+  "id": 19,
+  "title": "Avocado Toast",
+  "image": "https://www.dinneratthezoo.com/wp-content/uploads/2018/12/avocado-toast-14-500x500.jpg",
+  "diet": ["vegan"],
+  "difficulty": "hard",
+  "time": 6,
+  "servings": 1,
+  "ingredients": ["bread", "avocado", "lemon", "chili flakes", "salt"],
+  "steps": [
+    "• Toast bread slices until crisp.",
+    "• Mash avocado with lemon juice and salt.",
+    "• Spread mixture over toast and sprinkle chili flakes.",
+    "• Serve immediately."
+  ],
+  "nutrition": { "calories": 310, "protein": 7, "carbs": 34, "fat": 16 }
+},
+{
+  "id": 20,
+  "title": "Egg Fried Rice",
+  "image": "https://www.cookerru.com/wp-content/uploads/2022/07/egg-fried-rice-web-1-1170x1755.jpg",
+  "diet": ["non-veg"],
+  "difficulty": "medium",
+  "time": 15,
+  "servings": 2,
+  "ingredients": ["rice", "egg", "spring onion", "soy sauce", "oil", "salt"],
+  "steps": [
+    "• Scramble eggs in a hot pan and set aside.",
+    "• Add oil, sauté spring onions, and add cooked rice.",
+    "• Mix in soy sauce, salt, and scrambled eggs.",
+    "• Stir-fry for 2–3 minutes and serve hot."
+  ],
+  "nutrition": { "calories": 480, "protein": 14, "carbs": 76, "fat": 12 }
+},
+{
+  "id": 21,
+  "title": "Tuna Salad",
+  "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiVFgT9zi-XQkVEYvFL-Bld2FkGhqwbiq9HQ&s",
+  "diet": ["non-veg"],
+  "difficulty": "easy",
+  "time": 8,
+  "servings": 1,
+  "ingredients": ["tuna", "lettuce", "cucumber", "onion", "lemon", "olive oil", "salt"],
+  "steps": [
+    "• Combine tuna, chopped veggies, and lettuce in a bowl.",
+    "• Drizzle with olive oil and lemon juice.",
+    "• Season with salt and toss gently.",
+    "• Serve chilled."
+  ],
+  "nutrition": { "calories": 290, "protein": 20, "carbs": 8, "fat": 20 }
+},
+{
+  "id": 22,
+  "title": "Palak Paneer",
+  "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTl8enuFy1g1v5YJVTZ7ld4coiJMs2giWgq-g&s",
+  "diet": ["vegetarian"],
+  "difficulty": "hard",
+  "time": 25,
+  "servings": 2,
+  "ingredients": ["spinach", "paneer", "onion", "tomato", "garlic", "spices", "salt"],
+  "steps": [
+    "• Blanch spinach and blend into a smooth paste.",
+    "• Sauté onion, tomato, and garlic with spices.",
+    "• Add spinach puree and simmer for 5 minutes.",
+    "• Add paneer cubes, cook briefly, and serve warm."
+  ],
+  "nutrition": { "calories": 420, "protein": 20, "carbs": 18, "fat": 28 }
+},
+{
+  "id": 23,
+  "title": "Veg Biryani",
+  "image": "https://www.cookwithmanali.com/wp-content/uploads/2019/09/Vegetable-Biryani-Restaurant-Style.jpg",
+  "diet": ["vegetarian"],
+  "difficulty": "easy",
+  "time": 45,
+  "servings": 3,
+  "ingredients": ["basmati rice", "mixed veggies", "biryani masala", "onion", "ghee", "salt"],
+  "steps": [
+    "• Cook rice till 80% done; set aside.",
+    "• Sauté onions and mixed veggies in ghee.",
+    "• Add biryani masala and salt; mix well.",
+    "• Layer rice and masala, cook on low flame for 10 mins."
+  ],
+  "nutrition": { "calories": 560, "protein": 10, "carbs": 88, "fat": 16 }
+}
+
+]
