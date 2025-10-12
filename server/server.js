@@ -2,12 +2,13 @@
 // Minimal Express server with JSON file persistence (safe on Windows)
 import express from "express";
 import cors from "cors";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { nanoid } from "nanoid";
 import fs from "fs";
 import path from "path";
 import dotenv from "dotenv";
+
 dotenv.config();
 
 const PORT = process.env.PORT || 4000;
