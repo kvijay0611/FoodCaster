@@ -22,12 +22,51 @@ export function AuthProvider({ children }) {
     }
   }, [token]);
 
+  // keep localStorage in sync
+  useEffect(() => {
+    if (token) localStorage.setItem(TOKEN_KEY, token);
+    else localStorage.removeItem(TOKEN_KEY);
+    if (current) localStorage.setItem(EMAIL_KEY, current);
+    else localStorage.removeItem(EMAIL_KEY);
+  }, [token, current]);
+
+  // When token exists, fetch /api/me to validate and set current
+  useEffect(() => {
+    let mounted = true;
+    async function loadMe() {
+      if (!token) {
+        setCurrent(null);
+        setLoading(false);
+        return;
+      }
+      setLoading(true);
+      try {
+        const res = await axios.get(`${API}/api/me`);
+        if (!mounted) return;
+        if (res.data?.ok) {
+          setCurrent(res.data.email);
+        } else {
+          setToken(null);
+          setCurrent(null);
+        }
+      } catch (err) {
+        console.warn("Auth me failed", err?.response?.data || err.message);
+        if (mounted) {
+          setToken(null);
+          setCurrent(null);
+        }
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    }
+    loadMe();
+    return () => { mounted = false; };
+  }, [token]);
+
   const signup = async ({ email, password }) => {
     try {
       const res = await axios.post(`${API}/api/signup`, { email, password });
       if (res.data?.ok && res.data.token) {
-        localStorage.setItem(TOKEN_KEY, res.data.token);
-        localStorage.setItem(EMAIL_KEY, res.data.email);
         setToken(res.data.token);
         setCurrent(res.data.email);
         return { ok: true };
@@ -42,8 +81,6 @@ export function AuthProvider({ children }) {
     try {
       const res = await axios.post(`${API}/api/login`, { email, password });
       if (res.data?.ok && res.data.token) {
-        localStorage.setItem(TOKEN_KEY, res.data.token);
-        localStorage.setItem(EMAIL_KEY, res.data.email);
         setToken(res.data.token);
         setCurrent(res.data.email);
         return { ok: true };
@@ -55,13 +92,14 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(EMAIL_KEY);
     setToken(null);
     setCurrent(null);
     delete axios.defaults.headers.common.Authorization;
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(EMAIL_KEY);
   };
 
+  // Favorites helpers (you already had these)
   const getFavorites = async () => {
     if (!token) return [];
     try {
@@ -89,14 +127,38 @@ export function AuthProvider({ children }) {
     return favs.includes(recipeId);
   };
 
+  // --- Rating and Suggestions helpers (added) ---
+  const rateRecipe = async (recipeId, rating) => {
+    if (!token) return { ok: false, message: "Not authenticated" };
+    try {
+      const res = await axios.post(`${API}/api/rate`, { recipeId, rating });
+      return res.data || { ok: true };
+    } catch (err) {
+      return { ok: false, message: err?.response?.data?.message || err.message };
+    }
+  };
+
+  const getSuggestions = async () => {
+    try {
+      const res = await axios.get(`${API}/api/suggestions`);
+      return res.data?.suggestions || [];
+    } catch (err) {
+      console.error("getSuggestions", err);
+      return [];
+    }
+  };
+
   const value = {
     current,
+    token,
     signup,
     login,
     logout,
     getFavorites,
     toggleFavorite,
     isFavorited,
+    rateRecipe,
+    getSuggestions,
     loading
   };
 

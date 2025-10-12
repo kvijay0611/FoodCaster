@@ -1,97 +1,151 @@
-import React, { useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import NutritionCard from "./NutritionCard";
+import React, { useEffect, useMemo, useState } from "react";
+import { useAuth } from "../contexts/AuthContext";
+
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000";
+
+function scaleIngredient(ing, factor) {
+  // try to scale numeric prefixes (like "2 cups flour" -> scale 2)
+  const m = ing.match(/^([\d/.]+)\s*(.*)$/);
+  if (m) {
+    const qty = m[1];
+    const rest = m[2] || "";
+    let value = 0;
+    try {
+      // handle fractions like 1/2
+      if (qty.includes("/")) {
+        const parts = qty.split("/");
+        value = Number(parts[0]) / Number(parts[1]);
+      } else {
+        value = Number(qty);
+      }
+      if (!isNaN(value)) {
+        const scaled = (value * factor);
+        // render scaled with up to two decimals
+        const display = Number.isInteger(scaled) ? scaled : parseFloat(scaled.toFixed(2));
+        return `${display} ${rest}`.trim();
+      }
+    } catch {
+      // fallback
+    }
+  }
+  // fallback: return original if no numeric prefix
+  return ing;
+}
 
 export default function RecipeDetailModal({ open, onClose, recipe }) {
-  const dialogRef = useRef(null);
+  const { token } = useAuth(); // expects AuthContext to expose token
+  const [servings, setServings] = useState(recipe.servings ?? 1);
+  const [rating, setRating] = useState(0);
+  const [stats, setStats] = useState({ avg: 0, count: 0 });
 
   useEffect(() => {
-    if (open) {
-      // focus for accessibility
-      dialogRef.current?.focus();
-      document.body.style.overflow = "hidden"; // prevent background scroll
-    } else {
-      document.body.style.overflow = "";
+    setServings(recipe.servings ?? 1);
+  }, [recipe]);
+
+  // load recipe rating stats
+  useEffect(() => {
+    async function loadStats() {
+      try {
+        const res = await fetch(`${API_BASE}/api/ratings/recipe/${recipe.id ?? recipe.title ?? recipe.name}`);
+        const data = await res.json();
+        if (data?.ok) setStats(data.stats || { avg: 0, count: 0 });
+      } catch (err) {
+        // ignore
+      }
     }
-    return () => { document.body.style.overflow = ""; };
-  }, [open]);
+    loadStats();
+  }, [recipe]);
+
+  const ingredientList = Array.isArray(recipe.ingredients) ? recipe.ingredients : String(recipe.ingredients || "").split(",").map(s => s.trim()).filter(Boolean);
+
+  const scaledIngredients = useMemo(() => {
+    // compute factor relative to original servings (assume recipe.servings exists, else factor = servings)
+    const orig = recipe.servings ?? 1;
+    const factor = servings / orig;
+    return ingredientList.map(i => scaleIngredient(i, factor));
+  }, [ingredientList, servings, recipe]);
+
+  async function submitRating(value) {
+    try {
+      const res = await fetch(`${API_BASE}/api/rate`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({ recipeId: recipe.id ?? recipe.title ?? recipe.name, rating: value }),
+      });
+      const data = await res.json();
+      if (data?.ok) {
+        setRating(value);
+        setStats(data.stats || stats);
+      } else {
+        alert(data?.message || "Could not submit rating");
+      }
+    } catch (err) {
+      console.error("Rate error", err);
+      alert("Network error");
+    }
+  }
 
   if (!open) return null;
-
-  // safe getters with fallbacks
-  const title = recipe?.title || recipe?.name || "Recipe";
-  const image = recipe?.image || "/src/assets/placeholder.jpg";
-  const ingredients = recipe?.ingredients || recipe?.ingredientList || recipe?.ing || [];
-  const steps = recipe?.steps || recipe?.instructions || recipe?.method || [];
-  const nutrition = recipe?.nutrition || recipe?.nutrients || null;
-  const time = recipe?.time || recipe?.cookingTime || recipe?.duration || "";
-
   return (
-    <AnimatePresence>
-      <motion.div
-        className="fixed inset-0 z-50 flex items-start justify-center pt-20 bg-black/50"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        onClick={onClose}
-      >
-        <motion.div
-          role="dialog"
-          aria-modal="true"
-          aria-label={`${title} details`}
-          tabIndex={-1}
-          ref={dialogRef}
-          className="bg-white rounded-2xl shadow-xl w-11/12 md:w-3/4 lg:w-2/3 max-h-[80vh] overflow-auto"
-          initial={{ y: 30, scale: 0.98 }}
-          animate={{ y: 0, scale: 1 }}
-          exit={{ y: 20, scale: 0.98 }}
-          onClick={(e) => e.stopPropagation()}
-        >
-          <div className="flex flex-col md:flex-row">
-            <div className="md:w-1/2">
-              <img src={image} alt={title} className="w-full h-72 md:h-full object-cover rounded-t-2xl md:rounded-l-2xl md:rounded-tr-none" />
+    <div className="fixed inset-0 z-60 flex items-center justify-center">
+      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
+
+      <div className="relative bg-white w-full max-w-3xl mx-4 rounded-2xl shadow-lg p-6 z-10 overflow-auto max-h-[90vh]">
+        <div className="flex items-start justify-between gap-4">
+          <h3 className="text-2xl font-semibold">{recipe.title ?? recipe.name}</h3>
+          <button onClick={onClose} className="text-gray-600">Close</button>
+        </div>
+
+        <div className="mt-3 grid md:grid-cols-2 gap-6">
+          <div>
+            <img src={recipe.image || "/src/assets/placeholder.jpg"} alt={recipe.title || recipe.name} className="w-full h-44 object-cover rounded-lg" />
+            <div className="mt-3">
+              <div className="text-sm text-gray-600">Servings</div>
+              <div className="mt-2 flex items-center gap-2">
+                <button onClick={() => setServings(s => Math.max(1, s - 1))} className="px-3 py-1 border rounded">−</button>
+                <input type="number" min="1" value={servings} onChange={e => setServings(Math.max(1, Number(e.target.value || 1)))} className="w-20 text-center border rounded px-2 py-1" />
+                <button onClick={() => setServings(s => s + 1)} className="px-3 py-1 border rounded">+</button>
+              </div>
             </div>
 
-            <div className="md:w-1/2 p-6">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <h2 className="text-2xl font-semibold">{title}</h2>
-                  <div className="text-sm text-muted mt-1">{recipe?.diet ? (Array.isArray(recipe.diet) ? recipe.diet.join(", ") : recipe.diet) : ""} • {time} {time ? "min" : ""}</div>
-                </div>
+            <div className="mt-4">
+              <div className="text-sm font-medium">Ingredients</div>
+              <ul className="list-inside list-disc mt-2">
+                {scaledIngredients.map((ing, i) => <li key={i} className="text-sm text-gray-700">{ing}</li>)}
+              </ul>
+            </div>
+          </div>
 
-                <div className="ml-auto flex gap-2">
-                  <button onClick={onClose} className="px-3 py-1 rounded-full border">Close</button>
-                </div>
-              </div>
+          <div>
+            <div className="text-sm text-gray-600">Steps</div>
+            <ol className="list-decimal list-inside mt-2 space-y-2">
+              {(Array.isArray(recipe.steps) ? recipe.steps : String(recipe.steps || "").split("\n").filter(Boolean)).map((s, i) => (
+                <li key={i} className="text-sm text-gray-700">{s}</li>
+              ))}
+            </ol>
 
-              <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <h3 className="font-semibold mb-2">Ingredients</h3>
-                  {ingredients && ingredients.length ? (
-                    <ul className="list-disc list-inside text-sm text-muted">
-                      {ingredients.map((ing, i) => <li key={i}>{typeof ing === "string" ? ing : (ing.name || JSON.stringify(ing))}</li>)}
-                    </ul>
-                  ) : <p className="text-sm text-muted">No ingredient list available.</p>}
-                </div>
-
-                <div>
-                  <h3 className="font-semibold mb-2">Steps</h3>
-                  {steps && steps.length ? (
-                    <ol className="list-decimal list-inside text-sm text-muted space-y-2">
-                      {steps.map((s, i) => <li key={i}>{typeof s === "string" ? s : (s.step || s.description || JSON.stringify(s))}</li>)}
-                    </ol>
-                  ) : <p className="text-sm text-muted">No steps available.</p>}
-                </div>
-              </div>
-
-              <div className="mt-4">
-                <h3 className="font-semibold mb-2">Nutrition</h3>
-                <NutritionCard nutrition={nutrition} />
+            <div className="mt-4">
+              <div className="text-sm font-medium">Rate this recipe</div>
+              <div className="flex items-center gap-2 mt-2">
+                {[1,2,3,4,5].map(v => (
+                  <button
+                    key={v}
+                    onClick={() => submitRating(v)}
+                    className={`px-2 py-1 rounded ${v <= rating ? "bg-yellow-400" : "bg-gray-100"}`}
+                    aria-label={`Rate ${v}`}
+                  >
+                    ★
+                  </button>
+                ))}
+                <span className="text-sm text-gray-600 ml-3">avg: {stats.avg ?? 0} ({stats.count ?? 0})</span>
               </div>
             </div>
           </div>
-        </motion.div>
-      </motion.div>
-    </AnimatePresence>
+        </div>
+      </div>
+    </div>
   );
 }
