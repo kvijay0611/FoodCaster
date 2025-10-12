@@ -1,161 +1,127 @@
 // src/components/RecipeDetailModal.jsx
-import React, { useEffect, useState } from "react";
-import { useAuth } from "../contexts/AuthContext";
+import React, { useState, useEffect } from "react";
+import ModalWrapper from "./ModalWrapper";
 import axios from "axios";
 
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000";
+
 export default function RecipeDetailModal({ recipe, onClose }) {
-  if (!recipe) return null;
+  const [servings, setServings] = useState(recipe?.servings || 3);
+  const [rating, setRating] = useState(0);
+  const [avg, setAvg] = useState(0);
+  const [count, setCount] = useState(0);
 
-  const { rateRecipe } = useAuth();
-  const [servings, setServings] = useState(recipe.servings ?? 1);
-  const [ratingLoading, setRatingLoading] = useState(false);
-  const [stats, setStats] = useState({ avg: 0, count: 0 });
-
-  // load rating stats
+  // Load ratings from backend safely
   useEffect(() => {
-    let mounted = true;
-    async function loadStats() {
+    if (!recipe?.id) return;
+    async function fetchRating() {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:4000"}/api/ratings/recipe/${encodeURIComponent(recipe.id ?? recipe.title ?? recipe.name)}`);
-        if (!mounted) return;
-        if (res.data?.ok && res.data.stats) setStats(res.data.stats);
+        const res = await axios.get(`${API_BASE}/api/ratings/recipe/${recipe.id}`);
+        if (res.data?.ok) {
+          setAvg(res.data.stats.avg || 0);
+          setCount(res.data.stats.count || 0);
+        }
       } catch (err) {
-        // ignore
+        console.warn("Rating fetch failed:", err.message);
       }
     }
-    loadStats();
-    return () => (mounted = false);
-  }, [recipe]);
+    fetchRating();
+  }, [recipe?.id]);
 
-  // calculate nutrition per serving (if recipe.nutrition has numbers)
-  const perServingNutrition = {};
-  if (recipe.nutrition && typeof recipe.nutrition === "object") {
-    Object.keys(recipe.nutrition).forEach((k) => {
-      const total = Number(recipe.nutrition[k] || 0);
-      perServingNutrition[k] = recipe.servings ? (total / recipe.servings) : total;
-    });
-  }
-
-  const changeServing = (delta) => {
-    setServings((s) => Math.max(1, s + delta));
-  };
-
-  const scaledNutrition = {};
-  if (Object.keys(perServingNutrition).length) {
-    Object.keys(perServingNutrition).forEach((k) => {
-      scaledNutrition[k] = +(perServingNutrition[k] * servings).toFixed(2);
-    });
-  }
-
+  // Handle user rating
   const handleRate = async (value) => {
-    if (!value || value < 1 || value > 5) return;
-    setRatingLoading(true);
+    setRating(value); // instant UI feedback
     try {
-      const res = await rateRecipe(recipe.id ?? recipe.title ?? recipe.name, value);
-      // try to refresh stats
-      const statsRes = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:4000"}/api/ratings/recipe/${encodeURIComponent(recipe.id ?? recipe.title ?? recipe.name)}`);
-      if (statsRes.data?.ok) setStats(statsRes.data.stats);
+      const res = await axios.post(`${API_BASE}/api/ratings/add`, {
+        recipeId: recipe.id,
+        rating: value,
+      });
+      if (res.data?.ok) {
+        setAvg(res.data.stats.avg);
+        setCount(res.data.stats.count);
+      }
     } catch (err) {
-      alert(err?.message || "Could not save rating. Make sure you're logged in.");
-    } finally {
-      setRatingLoading(false);
+      console.warn("Rate submit failed:", err.message);
     }
   };
 
-  // Helper to render scaled ingredients. If ingredient entries are strings, we can't scale amounts reliably — show original list.
-  const renderIngredients = () => {
-    // If recipe.ingredients contains objects with quantity, scale; otherwise show simple list
-    if (Array.isArray(recipe.ingredients) && recipe.ingredients.length && typeof recipe.ingredients[0] === "object") {
-      return recipe.ingredients.map((ing, i) => {
-        const qty = Number(ing.quantity || 1);
-        const scaledQty = (qty * servings / (recipe.servings || 1)).toFixed(2);
-        return <li key={i}>{scaledQty} {ing.unit ?? ""} {ing.name ?? JSON.stringify(ing)}</li>;
-      });
-    } else {
-      // string list — just show bullet list and show note about servings change
-      return recipe.ingredients && recipe.ingredients.length ? recipe.ingredients.map((ing, i) => <li key={i}>{ing}</li>) : <li>No ingredients listed</li>;
-    }
+  if (!recipe) return null;
+
+  // Simple nutrition recalculation
+  const factor = servings / (recipe.servings || 3);
+  const nutrition = recipe.nutrition || {
+    calories: 560,
+    protein: 10,
+    carbs: 88,
+    fat: 16,
   };
+
+  const calc = (n) => (n * factor).toFixed(2);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-auto bg-black/40 p-6">
-      <div className="bg-white rounded-xl w-full max-w-5xl shadow-lg p-6 relative">
-        <button onClick={onClose} className="absolute right-4 top-4 text-gray-600">Close</button>
+    <ModalWrapper open={Boolean(recipe)} onClose={onClose}>
+      <div className="flex flex-col lg:flex-row gap-6">
+        <img
+          src={recipe.image}
+          alt={recipe.title}
+          className="w-full lg:w-1/2 h-64 object-cover rounded-lg"
+        />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <img src={recipe.image || recipe.img || "/src/assets/placeholder.jpg"} alt={recipe.title || recipe.name} className="w-full h-56 object-cover rounded-lg mb-4" />
-            <h2 className="text-2xl font-semibold mb-2">{recipe.title || recipe.name}</h2>
+        <div className="flex-1">
+          <div className="flex justify-between items-start mb-2">
+            <h2 className="text-2xl font-bold">{recipe.title}</h2>
+            <button
+              onClick={onClose}
+              className="text-gray-600 hover:text-black"
+              aria-label="Close"
+            >
+              ✕
+            </button>
+          </div>
 
-            <div className="mb-4">
-              <strong>Servings</strong>
-              <div className="mt-2 flex items-center gap-3">
-                <button onClick={() => changeServing(-1)} className="px-3 py-1 rounded border">-</button>
-                <div className="px-4 py-1 border rounded">{servings}</div>
-                <button onClick={() => changeServing(1)} className="px-3 py-1 rounded border">+</button>
-                <div className="text-sm text-gray-500 ml-3">Original: {recipe.servings ?? "—"}</div>
-              </div>
-            </div>
+          <p className="text-sm text-gray-500 mb-3">Steps</p>
+          <ol className="list-decimal list-inside space-y-1 text-gray-700 mb-4">
+            {recipe.steps?.map((s, i) => (
+              <li key={i}>{s}</li>
+            ))}
+          </ol>
 
-            <div>
-              <strong>Ingredients</strong>
-              <ul className="list-disc ml-5 mt-2">
-                {renderIngredients()}
-              </ul>
-              {(!Array.isArray(recipe.ingredients) || typeof recipe.ingredients[0] === "string") && (
-                <p className="text-sm text-gray-500 mt-2">Note: ingredient quantities are not parseable in this dataset, servings change is informational.</p>
-              )}
+          {/* Rating */}
+          <div className="mb-4">
+            <p className="font-semibold mb-1">Rate this recipe</p>
+            <div className="flex items-center gap-1">
+              {[1, 2, 3, 4, 5].map((val) => (
+                <button
+                  key={val}
+                  onClick={() => handleRate(val)}
+                  className={`text-xl ${
+                    val <= rating ? "text-yellow-400" : "text-gray-400"
+                  }`}
+                >
+                  ★
+                </button>
+              ))}
+              <span className="ml-2 text-sm text-gray-600">
+                avg: {avg.toFixed(1)} ({count})
+              </span>
             </div>
           </div>
 
-          <div>
-            <div>
-              <strong>Steps</strong>
-              <ol className="list-decimal ml-5 mt-2">
-                {Array.isArray(recipe.steps) ? recipe.steps.map((s, i) => <li key={i}>{s}</li>) : <li>{recipe.steps || "No steps provided."}</li>}
-              </ol>
-            </div>
-
-            <div className="mt-4">
-              <strong>Rate this recipe</strong>
-              <div className="flex items-center gap-2 mt-2">
-                {[1,2,3,4,5].map((n) => (
-                  <button
-                    key={n}
-                    onClick={() => handleRate(n)}
-                    disabled={ratingLoading}
-                    className="px-3 py-2 border rounded bg-white hover:bg-gray-50"
-                    title={`Rate ${n} star${n>1?"s":""}`}
-                  >
-                    ★
-                  </button>
-                ))}
-                <div className="ml-3 text-sm text-gray-600">avg: {stats.avg ?? 0} ({stats.count ?? 0})</div>
-              </div>
-            </div>
-
-            <div className="mt-4">
-              <strong>Nutrition</strong>
-              {recipe.nutrition && typeof recipe.nutrition === "object" ? (
-                <div className="mt-2 text-sm text-gray-700">
-                  <div>Per serving (approx):</div>
-                  <ul className="ml-5 mt-2">
-                    {Object.keys(perServingNutrition).length ? (
-                      Object.entries(perServingNutrition).map(([k, v]) => (
-                        <li key={k}>{k}: {Number(v).toFixed(2)} ({scaledNutrition[k] ? `${scaledNutrition[k]} for ${servings} serving${servings>1?"s":""}` : ""})</li>
-                      ))
-                    ) : (
-                      <li>No numeric nutrition data available.</li>
-                    )}
-                  </ul>
-                </div>
-              ) : (
-                <div className="mt-2 text-sm text-gray-600">Nutrition data not available for this recipe.</div>
-              )}
-            </div>
+          {/* Nutrition info */}
+          <div className="border-t pt-3 mt-2">
+            <p className="font-semibold mb-2">Nutrition</p>
+            <p className="text-sm text-gray-600 mb-1">
+              Per serving (approx):
+            </p>
+            <ul className="text-sm text-gray-700 space-y-1">
+              <li>calories: {calc(nutrition.calories)} ({nutrition.calories} for 3 servings)</li>
+              <li>protein: {calc(nutrition.protein)} ({nutrition.protein} for 3 servings)</li>
+              <li>carbs: {calc(nutrition.carbs)} ({nutrition.carbs} for 3 servings)</li>
+              <li>fat: {calc(nutrition.fat)} ({nutrition.fat} for 3 servings)</li>
+            </ul>
           </div>
         </div>
       </div>
-    </div>
+    </ModalWrapper>
   );
 }
