@@ -1,0 +1,31 @@
+{
+  "users": [
+    {
+      "id": "TsIGbtaxT3_P5YaqNht2u",
+      "email": "keertivijayananth06@gmail.com",
+      "password": "$2b$10$48J4NBuREp.xnUskL3et4ekBk8XUZ.dij3j/WsYRlt0UYhZuGlEIq"
+    },
+    {
+      "id": "XOM01W_RgaHNkKgXDeJCS",
+      "email": "anushashree@gmail.com",
+      "password": "$2b$10$vsDX2CMoioYvbuU8D0wLGeKmFfHxOSqal4J1X0/5kbaYZ7HKmGwaK"
+    }
+  ],
+  "favorites": [
+    {
+      "id": "RzEmStJXM4aJJ-x85eY8l",
+      "user_id": "XOM01W_RgaHNkKgXDeJCS",
+      "recipe_id": 2
+    },
+    {
+      "id": "9C9sWg1m5JGa9IRRI78wh",
+      "user_id": "XOM01W_RgaHNkKgXDeJCS",
+      "recipe_id": 3
+    },
+    {
+      "id": "HuVMkv4zcDWrAViEeUn0Q",
+      "user_id": "XOM01W_RgaHNkKgXDeJCS",
+      "recipe_id": "3"
+    }
+  ]
+}

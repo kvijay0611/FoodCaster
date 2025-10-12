@@ -10,7 +10,7 @@ export default function App(){
         <Home />
       </main>
       <footer className="text-center py-8 text-sm text-gray-500">
-        © {new Date().getFullYear()} FoodCaster — Smart Recipe Generator
+        © {new Date().getFullYear()} FoodCaster — Keerti Vijay Ananth
       </footer>
     </div>
   );
