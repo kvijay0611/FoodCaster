@@ -5,18 +5,18 @@ import AuthModal from "./AuthModal";
 import FavoritesModal from "./FavoritesModal";
 
 export default function Navbar() {
-  const { current } = useAuth();
+  const { current, logout } = useAuth();
   const [authOpen, setAuthOpen] = useState(false);
   const [favOpen, setFavOpen] = useState(false);
 
   useEffect(() => {
-    // Allow other components to open auth modal by dispatching `open-auth-modal`
+    // Listen to global event used by other components to open auth modal
     const handler = () => setAuthOpen(true);
     window.addEventListener("open-auth-modal", handler);
     return () => window.removeEventListener("open-auth-modal", handler);
   }, []);
 
-  const handleScrollTo = (id) => {
+  const scrollTo = (id) => {
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
@@ -28,9 +28,9 @@ export default function Navbar() {
           <div className="flex items-center gap-6">
             <div className="text-2xl font-display font-bold">FoodCaster</div>
             <nav className="hidden md:flex items-center gap-6 text-sm text-muted">
-              <button onClick={() => handleScrollTo("home")} className="hover:underline">Home</button>
-              <button onClick={() => handleScrollTo("recipes")} className="hover:underline">Recipes</button>
-              <button onClick={() => handleScrollTo("contact")} className="hover:underline">Contact</button>
+              <button onClick={() => scrollTo("home")} className="hover:underline">Home</button>
+              <button onClick={() => scrollTo("recipes")} className="hover:underline">Recipes</button>
+              <button onClick={() => scrollTo("contact")} className="hover:underline">Contact</button>
             </nav>
           </div>
 
@@ -43,22 +43,32 @@ export default function Navbar() {
               Favorites
             </button>
 
-            <button
-              onClick={() => setAuthOpen(true)}
-              className="px-4 py-2 rounded-full border text-sm"
-            >
-              {current ? current : "Sign Up"}
-            </button>
+            {current ? (
+              <>
+                <span className="text-sm text-gray-700">{current}</span>
+                <button
+                  onClick={() => logout()}
+                  className="px-4 py-2 rounded-full border text-sm"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => setAuthOpen(true)}
+                className="px-4 py-2 rounded-full border text-sm"
+              >
+                Sign Up
+              </button>
+            )}
           </div>
 
-          {/* Mobile: simple menu button */}
           <div className="md:hidden">
-            <button className="px-3 py-1 rounded border" onClick={() => alert("Open mobile menu (implement if needed)")}>Menu</button>
+            <button className="px-3 py-1 rounded border" onClick={() => alert("Mobile menu: implement if needed")}>Menu</button>
           </div>
         </div>
       </header>
 
-      {/* Modals */}
       <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
       <FavoritesModal open={favOpen} onClose={() => setFavOpen(false)} />
     </>

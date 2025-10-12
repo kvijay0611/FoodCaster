@@ -3,41 +3,42 @@ import React, { useEffect, useMemo, useState } from "react";
 import Hero from "../components/Hero";
 import RecipeCard from "../components/RecipeCard";
 import Contact from "../components/Contact";
-import ImageDetect from "../components/ImageDetect";
 import recipesData from "../data/recipes.json";
 
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000";
+
 /**
- * Home page - combines hero, controls and recipe grid
+ * Home page - hero, controls, recipe grid, contact
  */
 export default function Home() {
   const [query, setQuery] = useState("");
   const [dietFilter, setDietFilter] = useState("all");
   const [timeFilter, setTimeFilter] = useState("all"); // all / 15 / 30 / 60
   const [difficultyFilter, setDifficultyFilter] = useState("all");
-  const [filtered, setFiltered] = useState([]);
   const [detectedIngredients, setDetectedIngredients] = useState([]);
+  const [filtered, setFiltered] = useState([]);
 
-  // default show first 25 recipes initially
+  // initial seed: show first 25 recipes
   useEffect(() => {
     setFiltered(recipesData.slice(0, 25));
   }, []);
 
-  // filtering logic (runs when any control changes)
+  // recompute filtered list when filters change
   useEffect(() => {
-    const q = query.trim().toLowerCase();
-    const detector = detectedIngredients.map(s => s.toLowerCase());
+    const q = (query || "").trim().toLowerCase();
+    const detectors = (detectedIngredients || []).map(d => String(d).toLowerCase());
 
-    let list = recipesData;
+    let list = recipesData.slice();
 
-    // filter by diet
+    // diet
     if (dietFilter !== "all") {
       list = list.filter(r => {
         const diets = Array.isArray(r.diet) ? r.diet.map(d => String(d).toLowerCase()) : [String(r.diet || "").toLowerCase()];
-        return diets.some(d => d.includes(dietFilter));
+        return diets.some(d => d && d.includes(dietFilter));
       });
     }
 
-    // filter by time
+    // time
     if (timeFilter !== "all") {
       const max = Number(timeFilter);
       list = list.filter(r => {
@@ -51,7 +52,7 @@ export default function Home() {
       list = list.filter(r => String(r.difficulty || "").toLowerCase().includes(difficultyFilter));
     }
 
-    // text query - search title / ingredients
+    // text search
     if (q) {
       list = list.filter(r => {
         const title = (r.title || r.name || "").toLowerCase();
@@ -60,23 +61,31 @@ export default function Home() {
       });
     }
 
-    // detected ingredients: ensure recipe contains at least one detected ingredient
-    if (detector.length > 0) {
+    // detected ingredient filter (must contain at least one)
+    if (detectors.length > 0) {
       list = list.filter(r => {
         const ingredientText = (Array.isArray(r.ingredients) ? r.ingredients.join(" ") : (r.ingredients || "")).toLowerCase();
-        return detector.some(d => d && ingredientText.includes(d));
+        return detectors.some(d => d && ingredientText.includes(d));
       });
     }
 
     setFiltered(list.slice(0, 25));
   }, [query, dietFilter, timeFilter, difficultyFilter, detectedIngredients]);
 
-  // handle generate button (optionally open a "smart" generation; here we just scroll to recipes)
-  const handleGenerate = () => {
-    // for now, scroll to recipes
-    const el = document.getElementById("recipes");
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-    // optionally you could call an AI endpoint to generate recipe suggestions using detectedIngredients
+  // Generate Recipes button behaviour - simple scroll + health-check ping
+  const handleGenerate = async () => {
+    // optional: ping API health to ensure backend is up
+    try {
+      const res = await fetch(`${API_BASE}/api/health`);
+      // if ok, scroll to recipes
+      const el = document.getElementById("recipes");
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    } catch (err) {
+      console.warn("Backend health check failed:", err);
+      // still scroll to recipes
+      const el = document.getElementById("recipes");
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   };
 
   const diets = useMemo(() => ["all", "vegetarian", "non-veg", "gluten-free", "dairy-free"], []);
@@ -88,7 +97,6 @@ export default function Home() {
       <Hero onGenerate={handleGenerate} />
 
       <section className="max-w-6xl mx-auto px-6 py-8">
-        {/* Controls */}
         <div className="bg-white border rounded-2xl p-4 mb-6">
           <div className="flex flex-col md:flex-row items-center gap-4">
             <input
@@ -114,53 +122,45 @@ export default function Home() {
               {difficulties.map(d => <option key={d} value={d}>{d === "all" ? "Any difficulty" : d}</option>)}
             </select>
 
-            <button onClick={() => { setQuery(""); setDetectedIngredients([]); setDietFilter("all"); setTimeFilter("all"); setDifficultyFilter("all"); }} className="px-4 py-2 rounded-full border">
+            <button
+              onClick={() => { setQuery(""); setDetectedIngredients([]); setDietFilter("all"); setTimeFilter("all"); setDifficultyFilter("all"); }}
+              className="px-4 py-2 rounded-full border"
+            >
               Reset
             </button>
           </div>
 
-          {/* Image detect area (optional component) */}
-          <div className="mt-4">
-            {/* If you have an ImageDetect component, you can pass setDetectedIngredients to it.
-                If not, this area will show a simple upload + preview + manual ingredient input. */}
-            {typeof ImageDetect !== "undefined" ? (
-              <ImageDetect onDetect={(items) => setDetectedIngredients(items)} />
-            ) : (
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm text-gray-700">Upload an image to detect ingredients</label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => {
-                      // very simple: don't actually detect — just show preview; user can type keywords below
-                      const file = e.target.files?.[0];
-                      if (!file) return;
-                      const url = URL.createObjectURL(file);
-                      // store the single detected "ingredient" as file name to demonstrate
-                      setDetectedIngredients([file.name.split(".")[0]]);
-                    }}
-                    className="mt-2"
-                  />
-                </div>
+          <div className="mt-4 grid md:grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm text-gray-700">Upload an image to detect ingredients</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  // basic demo: set detected ingredient to filename (strip extension)
+                  const name = file.name.split(".")[0];
+                  setDetectedIngredients([name]);
+                }}
+                className="mt-2"
+              />
+            </div>
 
-                <div>
-                  <label className="text-sm text-gray-700">Or type an ingredient to filter</label>
-                  <input
-                    type="text"
-                    placeholder="e.g., tomato, egg, basil"
-                    value={detectedIngredients.join(", ")}
-                    onChange={(e) => setDetectedIngredients(e.target.value.split(",").map(s => s.trim()).filter(Boolean))}
-                    className="mt-2 border rounded-lg px-4 py-2 w-full"
-                  />
-                  <div className="mt-2 text-sm text-gray-500">Detected: {detectedIngredients.length ? detectedIngredients.join(", ") : "—"}</div>
-                </div>
-              </div>
-            )}
+            <div>
+              <label className="text-sm text-gray-700">Or type ingredients (comma separated)</label>
+              <input
+                type="text"
+                placeholder="e.g., tomato, egg, basil"
+                value={detectedIngredients.join(", ")}
+                onChange={(e) => setDetectedIngredients(e.target.value.split(",").map(s => s.trim()).filter(Boolean))}
+                className="mt-2 border rounded-lg px-4 py-2 w-full"
+              />
+              <div className="mt-2 text-sm text-gray-500">Detected: {detectedIngredients.length ? detectedIngredients.join(", ") : "—"}</div>
+            </div>
           </div>
         </div>
 
-        {/* Recipe grid */}
         <section id="recipes" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filtered.length ? (
             filtered.map((r) => <RecipeCard key={r.id ?? r.title ?? r.name} recipe={r} />)
