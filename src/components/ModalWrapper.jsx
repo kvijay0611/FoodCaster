@@ -1,28 +1,55 @@
+// src/components/ModalWrapper.jsx
 import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
 
+/**
+ * Simple, robust modal wrapper — locks scroll when open and cleans up on unmount.
+ */
 export default function ModalWrapper({ open, onClose, children }) {
   useEffect(() => {
+    const prev = document.body.style.overflow;
     if (open) document.body.style.overflow = "hidden";
-    else document.body.style.overflow = "";
-    return () => (document.body.style.overflow = "");
+    return () => { document.body.style.overflow = prev || ""; };
   }, [open]);
 
   if (!open) return null;
 
+  // create portal container
+  let root = document.getElementById("modal-root");
+  if (!root) {
+    root = document.createElement("div");
+    root.id = "modal-root";
+    document.body.appendChild(root);
+  }
+
   return ReactDOM.createPortal(
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center"
-      onClick={onClose}
-    >
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+    <div data-modal-root>
+      <div
+        data-modal-backdrop
+        onClick={onClose}
+        style={{
+          position: "fixed",
+          inset: 0,
+          background: "rgba(0,0,0,0.7)",
+          zIndex: 9998,
+        }}
+      />
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative bg-white rounded-2xl shadow-lg p-6 max-w-5xl w-[95%] max-h-[90vh] overflow-y-auto"
+        style={{
+          position: "fixed",
+          top: "6%",
+          left: "50%",
+          transform: "translateX(-50%)",
+          zIndex: 9999,
+          width: "min(1100px, 96%)",
+          maxHeight: "88vh",
+          overflowY: "auto",
+        }}
       >
-        {children}
+        <div style={{ background: "white", borderRadius: 12, padding: 20 }}>{children}</div>
       </div>
     </div>,
-    document.body
+    root
   );
 }

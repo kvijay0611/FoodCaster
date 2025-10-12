@@ -5,24 +5,14 @@ import RecipeDetailModal from "./RecipeDetailModal";
 export default function RecipeCard({ recipe }) {
   const [open, setOpen] = useState(false);
 
-  const titleKey = recipe.id ?? recipe.title ?? recipe.name;
-
   return (
     <>
-      <article className="bg-white border rounded-xl overflow-hidden shadow-sm">
-        <button onClick={() => setOpen(true)} className="text-left w-full">
-          <img src={recipe.image || "/src/assets/placeholder.jpg"} alt={recipe.title || recipe.name} className="w-full h-48 object-cover" />
-          <div className="p-4">
-            <h3 className="text-xl font-semibold mb-1">{recipe.title ?? recipe.name}</h3>
-            <div className="text-sm text-muted mb-2">
-              {recipe.diet ? (Array.isArray(recipe.diet) ? recipe.diet.join(", ") : recipe.diet) : "—"} • {recipe.time ?? recipe.cookingTime ?? recipe.duration ?? "—"} min
-            </div>
-            <div className="flex gap-2">
-              <button className="px-3 py-1 rounded-full border text-sm">Nutrition</button>
-              <button className="px-3 py-1 rounded-full border text-sm">View</button>
-            </div>
-          </div>
-        </button>
+      <article onClick={() => setOpen(true)} style={{ cursor: "pointer", border: "1px solid #eee", borderRadius: 8, overflow: "hidden" }}>
+        <img src={recipe.image} alt={recipe.title} style={{ width: "100%", height: 160, objectFit: "cover" }} />
+        <div style={{ padding: 12 }}>
+          <h3 style={{ margin: 0 }}>{recipe.title}</h3>
+          <div style={{ color: "#666", marginTop: 6 }}>{(recipe.diet || "").toString()}</div>
+        </div>
       </article>
 
       <RecipeDetailModal open={open} onClose={() => setOpen(false)} recipe={recipe} />
