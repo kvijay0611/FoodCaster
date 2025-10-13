@@ -156,7 +156,7 @@ export default function Home() {
             </select>
 
             <select value={timeFilter} onChange={(e) => setTimeFilter(e.target.value)} className="border rounded-lg px-3 py-2" aria-label="Filter by time">
-              <option value="all">All times</option>
+              <option value="all">Cooking Time</option>
               <option value="15">≤ 15 min</option>
               <option value="30">≤ 30 min</option>
               <option value="60">≤ 60 min</option>
