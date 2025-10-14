@@ -111,9 +111,7 @@ export default function Contact() {
           </div>
         </form>
 
-        <div className="mt-4 text-xs text-gray-500">
-          Tip: for EmailJS, set VITE_EMAILJS_SERVICE_ID, VITE_EMAILJS_TEMPLATE_ID and VITE_EMAILJS_PUBLIC_KEY in your environment.
-        </div>
+        
       </div>
     </section>
   );
