@@ -8,7 +8,7 @@ export default function RecipeCard({ recipe, onOpen }) {
   const { current } = useAuth();
   const [avg, setAvg] = useState(0);
   const [total, setTotal] = useState(0);
-  const [userRating, setUserRating] = useState(0); // local optimistic user rating
+  const [userRating, setUserRating] = useState(0);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -26,7 +26,6 @@ export default function RecipeCard({ recipe, onOpen }) {
     return () => (mounted = false);
   }, [recipe.id]);
 
-  // Handle star click (no optimistic avg change - wait server response)
   const handleRate = async (value) => {
     if (!current) {
       alert("Please sign in to rate recipes.");
@@ -46,10 +45,8 @@ export default function RecipeCard({ recipe, onOpen }) {
       });
       const data = await res.json();
       if (data && data.ok) {
-        // Server already applied toggle logic (same rating -> removed)
         setAvg(Number(data.average || 0));
         setTotal(Number(data.total || 0));
-        // toggle userRating locally based on previous state
         setUserRating(prev => (prev === value ? 0 : value));
       } else {
         console.warn("Rating request failed", data);
@@ -62,8 +59,8 @@ export default function RecipeCard({ recipe, onOpen }) {
   };
 
   return (
-    <div className="bg-white border rounded-2xl p-4 flex flex-col">
-      <img src={recipe.image} alt={recipe.title} className="w-full h-40 object-cover rounded-lg mb-3" />
+    <div className="bg-white border rounded-2xl p-4 flex flex-col shadow-sm">
+      <img src={recipe.image} alt={recipe.title} className="w-full h-44 object-cover rounded-lg mb-3" />
       <div className="flex items-center justify-between mb-2">
         <h3 className="text-lg font-semibold">{recipe.title}</h3>
         <span className="text-sm text-gray-500">{recipe.time ?? "—"} min</span>
@@ -71,7 +68,7 @@ export default function RecipeCard({ recipe, onOpen }) {
 
       <p className="text-sm text-gray-600 mb-4 line-clamp-3">{recipe.description}</p>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 mb-3">
         <div className="flex items-center">
           {[1,2,3,4,5].map(v => {
             const filled = userRating >= v;
@@ -80,10 +77,8 @@ export default function RecipeCard({ recipe, onOpen }) {
                 key={v}
                 onClick={() => handleRate(v)}
                 disabled={loading}
-                aria-label={`Rate ${v} star${v>1?"s":""}`}
-                className={`text-2xl leading-none px-1 transition-transform ${
-                  filled ? "text-yellow-400" : "text-gray-300 hover:text-yellow-400"
-                } ${loading ? "opacity-60 cursor-wait" : "hover:scale-110"}`}
+                aria-label={`Rate ${v}`}
+                className={`text-2xl px-1 transition-transform ${filled ? "text-yellow-400" : "text-gray-300 hover:text-yellow-400"} ${loading ? "opacity-60 cursor-wait" : "hover:scale-110"}`}
                 type="button"
               >
                 ★
@@ -97,9 +92,9 @@ export default function RecipeCard({ recipe, onOpen }) {
         </div>
       </div>
 
-      <div className="mt-4 flex gap-2">
+      <div className="mt-auto flex gap-2">
         <button onClick={() => onOpen && onOpen(recipe)} className="px-3 py-2 rounded-full border text-sm">View</button>
-        <button className="px-3 py-2 rounded-full border text-sm">Nutrition</button>
+        <button onClick={() => onOpen && onOpen(recipe, { showNutrition: true })} className="px-3 py-2 rounded-full border text-sm">View Nutrition</button>
       </div>
     </div>
   );
