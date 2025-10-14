@@ -6,11 +6,7 @@ import { useAuth } from "../contexts/AuthContext";
 
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
-/**
- * Minimal, robust recipe card: shows image, title, tiny star preview, time,
- * and two buttons: View (opens modal) and Nutrition (also opens modal).
- * It fetches rating stats for display (avg/count) but will not break if backend is down.
- */
+
 export default function RecipeCard({ recipe }) {
   const { current } = useAuth();
   const [open, setOpen] = useState(false);
