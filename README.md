@@ -170,7 +170,7 @@ npm run dev
 ## 🧑‍🏫 Authors & Credits
 
 **Project Lead:** [Keerti Vijay Ananth](mailto:keertivijayananth06@gmail.com)  
-**Development Assistance:** Oscar (AI support)  
+**Development Assistance:** figma , AI for code verification 
 **Stack:** React, Node.js, Tailwind, EmailJS, JSON-Server  
 **Institution:** VIT Bhopal  
 
